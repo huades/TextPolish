@@ -1,0 +1,10 @@
+# 配置导出包含 API Key
+input-optimizer-*.json
+input-optimizer-config-*.json
+textpolish-*.json
+*-config-*.json
+*.local.json
+
+# 本地构建与依赖
+node_modules/
+dist/

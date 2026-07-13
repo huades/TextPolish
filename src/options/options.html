@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TextPolish · 配置</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="../../assets/icons/icon-48.png" alt="" width="40" height="40">
+      <div><h1>TextPolish</h1><p>轻松优化与翻译网页输入</p></div>
+    </div>
+    <div class="top-actions">
+      <label class="theme-control" for="themeSelect">
+        <span>主题</span>
+        <select id="themeSelect" aria-label="页面主题">
+          <option value="system">跟随系统</option>
+          <option value="light">浅色</option>
+          <option value="dark">深色</option>
+        </select>
+      </label>
+      <button id="importBtn" class="button secondary" type="button">导入</button>
+      <button id="exportBtn" class="button secondary" type="button">导出</button>
+      <button id="saveBtn" class="button primary" type="button">保存配置</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="help-card">
+      <span class="eyebrow">快捷操作</span>
+      <div class="shortcut"><kbd>Space</kbd><kbd>Space</kbd><span>优化中文</span></div>
+      <div class="shortcut"><kbd>Space</kbd><kbd>Space</kbd><kbd>Space</kbd><span>翻译文本</span></div>
+      <p>在网页输入框内连续按空格即可触发。请求由扩展后台发送，不会把 API Key 暴露给网页。</p>
+    </aside>
+
+    <div class="content">
+      <section class="card">
+        <div class="section-head">
+          <div><span class="eyebrow">API</span><h2>模型线路</h2><p>按顺序尝试可用线路；自动模式会依据 URL 优先选择协议。</p></div>
+          <button id="toggleEditorBtn" class="button primary" type="button">添加线路</button>
+        </div>
+
+        <form id="endpointForm" class="endpoint-form hidden">
+          <div class="field"><label for="epName">线路名称</label><input id="epName" autocomplete="off" placeholder="例如：主线路"></div>
+          <div class="field"><label for="epMode">接口协议</label><select id="epMode"><option value="auto">自动识别（推荐）</option><option value="openai_responses">OpenAI Responses</option><option value="openai_chat">OpenAI Chat Completions</option><option value="openai_custom">OpenAI 兼容（保留完整 URL）</option><option value="anthropic_messages">Anthropic Messages</option><option value="gemini_generate">Google Gemini</option><option value="ollama_chat">Ollama</option></select></div>
+          <div class="field wide"><label for="epUrl">接口 URL</label><input id="epUrl" type="url" placeholder="https://api.example.com/v1/responses" required></div>
+          <div class="field wide"><label for="epKey">API Key <span>Ollama 本地服务可留空</span></label><div class="input-action"><input id="epKey" type="password" autocomplete="new-password" placeholder="按服务商要求填写"><button id="toggleKeyBtn" type="button" aria-label="显示或隐藏 API Key">显示</button></div></div>
+          <div class="field wide"><label for="epModel">模型 <span>多个模型用逗号分隔</span></label><input id="epModel" placeholder="填写服务商提供的模型名称" required></div>
+          <div class="form-actions"><button id="cancelEditorBtn" class="button secondary" type="button">取消</button><button id="saveEndpointBtn" class="button primary" type="submit">保存线路</button></div>
+        </form>
+
+        <div id="endpointList" class="endpoint-list" aria-live="polite"></div>
+        <button id="testAllBtn" class="button test-all" type="button">测试全部线路</button>
+        <pre id="testResult" class="result hidden" aria-live="polite"></pre>
+      </section>
+
+      <section class="card">
+        <div class="section-head compact"><div><span class="eyebrow">偏好</span><h2>处理参数</h2></div></div>
+        <div class="settings-grid">
+          <div class="field"><label for="targetLang">翻译目标语言</label><select id="targetLang"><option value="en">英语</option><option value="ja">日语</option><option value="ko">韩语</option><option value="fr">法语</option><option value="de">德语</option></select></div>
+          <div class="field"><label for="minChars">优化结果最少字数</label><input id="minChars" type="number" min="20" max="2000" step="1"></div>
+          <div class="field"><label for="temperature">Temperature <span>0–2</span></label><input id="temperature" type="number" min="0" max="2" step="0.1"></div>
+          <div class="field"><label for="requestTimeout">请求超时 <span>秒</span></label><input id="requestTimeout" type="number" min="5" max="120" step="1"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <input id="importFile" type="file" accept="application/json,.json" hidden>
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  <script type="module" src="options.js"></script>
+</body>
+</html>
