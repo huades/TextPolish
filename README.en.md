@@ -9,6 +9,7 @@
 
 - Press Space twice to polish Chinese text.
 - Press Space three times to translate text into your selected language.
+- Press `Ctrl+Z` (`⌘Z` on macOS) after an AI replacement to restore the original text.
 - Supports OpenAI Responses, Chat Completions, Anthropic Messages, Google Gemini, and Ollama.
 - Supports multiple API endpoints, fallback models, and automatic failover.
 - Test connections, reorder endpoints, and import or export settings.
@@ -53,6 +54,7 @@ Type text in an input, textarea, or editable region on any web page:
 
 - Press Space twice quickly to polish Chinese text.
 - Press Space three times quickly to translate the text.
+- Press `Ctrl+Z` (`⌘Z` on macOS) after processing to undo the AI result.
 
 TextPolish replaces the original content with the result. If a request fails, the original text is preserved and an error appears in the bottom-right corner.
 
