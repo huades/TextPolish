@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "TextPolish",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "双击空格优化中文，三击空格翻译文本，支持 OpenAI、Anthropic、Gemini 和 Ollama。",
   "permissions": ["storage"],
   "host_permissions": ["http://*/*", "https://*/*"],

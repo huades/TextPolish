@@ -9,6 +9,7 @@
 
 - 连按两次空格，优化中文表达。
 - 连按三次空格，翻译到指定语言。
+- AI 替换后按 `Ctrl+Z`（macOS 为 `⌘Z`）恢复原文。
 - 支持 OpenAI Responses、Chat Completions、Anthropic Messages、Google Gemini 和 Ollama。
 - 支持多条 API 线路、多个候选模型及自动故障切换。
 - 可测试连接、调整线路顺序、导入或导出配置。
@@ -53,6 +54,7 @@ https://example.com/v1/messages
 
 - 快速连按两次空格：优化中文。
 - 快速连按三次空格：翻译文本。
+- 处理完成后按 `Ctrl+Z`（macOS 为 `⌘Z`）：撤回 AI 结果并恢复原文。
 
 处理结果会直接替换原内容。发生错误时会保留原文，并在页面右下角显示原因。
 
