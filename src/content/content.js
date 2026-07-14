@@ -4,10 +4,16 @@
   let spaceCount = 0;
   let pendingTimer = null;
   let busy = false;
+  const replacementHistory = new WeakMap();
 
   document.addEventListener('keydown', handleKeydown, true);
 
   function handleKeydown(event) {
+    if (isUndoShortcut(event) && !busy && isEditable(event.target)) {
+      if (undoLastReplacement(event.target)) event.preventDefault();
+      return;
+    }
+
     if (event.code !== 'Space' || event.repeat || busy || !isEditable(event.target)) return;
 
     const now = Date.now();
@@ -33,6 +39,7 @@
   async function runAction(element, text, type) {
     resetTrigger();
     busy = true;
+    const inputSnapshot = readText(element);
     showToast(type === 'OPTIMIZE_TEXT' ? '正在优化…' : '正在翻译…', 'loading');
 
     try {
@@ -40,8 +47,13 @@
       if (!response?.ok) throw new Error(response?.error || '扩展后台未返回结果');
       const result = String(response.content || '').trim();
       if (!result) throw new Error('接口返回内容为空');
-      writeText(element, result);
-      showToast('处理完成', 'success');
+      if (readText(element) !== inputSnapshot) {
+        showToast('输入内容已改变，已取消替换', 'error');
+        return;
+      }
+      writeText(element, result, 'insertReplacementText');
+      rememberReplacement(element, text, result);
+      showToast('处理完成，可按 Ctrl+Z 恢复原文', 'success');
     } catch (error) {
       console.error('[TextPolish]', error);
       showToast(`请求失败：${error.message}`, 'error', 7000);
@@ -60,14 +72,37 @@
     return element.isContentEditable ? element.innerText : element.value;
   }
 
-  function writeText(element, text) {
+  function writeText(element, text, inputType = 'insertText') {
     if (element.isContentEditable) element.innerText = text;
     else {
       const setter = Object.getOwnPropertyDescriptor(element.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype, 'value')?.set;
       setter ? setter.call(element, text) : (element.value = text);
     }
-    element.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: text }));
+    element.dispatchEvent(new InputEvent('input', { bubbles: true, inputType, data: text }));
     element.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  function isUndoShortcut(event) {
+    return event.code === 'KeyZ' && (event.ctrlKey || event.metaKey) && !event.shiftKey && !event.altKey;
+  }
+
+  function rememberReplacement(element, before, after) {
+    const history = replacementHistory.get(element) || [];
+    history.push({ before, after });
+    if (history.length > 10) history.shift();
+    replacementHistory.set(element, history);
+  }
+
+  function undoLastReplacement(element) {
+    const history = replacementHistory.get(element);
+    const last = history?.[history.length - 1];
+    if (!last || readText(element) !== last.after) return false;
+
+    history.pop();
+    if (!history.length) replacementHistory.delete(element);
+    writeText(element, last.before, 'historyUndo');
+    showToast('已恢复原文', 'success');
+    return true;
   }
 
   function resetTrigger() {
